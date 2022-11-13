@@ -1,258 +1,202 @@
-import superpoderoses.*
+import feria.*
 
-describe "Superpoderoses" {
-	
-	/* ACLARACIÓN 
-	 * El test asume todos los objetos como instancias de clases. 
-	 * Si el diseño de la solución utiliza objetos bien conocidos en algunos casos entonces 
-	 * se debe remover la declaración de la variable y la línea en que se sugiere la instanciación.
-	 */
+describe "feria" {
 
-	const altaVelocidad= new Velocidad(rapidez = 2)
-	const superVelocidad= new Velocidad(rapidez = 3)
-	const vueloRasante= new Vuelo(alturaMaxima = 10, energiaParaDespegue = 10)
-	const vueloAlto=new Vuelo(alturaMaxima =300, energiaParaDespegue = 200)
-	const vueloRasanteAmplificado=new PoderAmplificador(poderBase =vueloRasante, amplificador = 4)
-	const superVelocidadAmplificada=new  PoderAmplificador(poderBase = superVelocidad , amplificador = 3)
 	
-	const capitanaPatriaGrande= new Personaje(estrategia = 3, espiritualidad = 5)
-	const plusvaliaCero= new Personaje(estrategia = 2, espiritualidad = 4)
-	const usinaDeDerechos= new Personaje(estrategia = 1, espiritualidad = 6)
+	//const sanMartin = //un municipio normal (se necesita en la segunda parte)
+	const sanMartin = new Municipio()
+	//const quilmes = //un municipio relajado (se necesita en la segunda parte)
+	const quilmes=new Relajado()
+	//const tigre = //un municipio hiperrelajado (se necesita en la segunda parte)
+	const tigre=new HiperRelajado() 
+	//Remedios es una visitante de  72 tiene 500 pesos disponible. 
+	//Para el punto 2: su deuda es de 700 y reside en Tigre	
+	const Remedios = new Visitante(edad =72, dinero = 500, municipioRecidencia = tigre, deudaMunicipal = 700)
 	
-	const cooperativaJusticiera= new Equipo()
-	/* 
-	const peligroSencillo
-	const peligroSencilloRadiactivo 
-	const peligroModerado
-	const peligroAlto
+	//Manuel es un visitante de 7 años y tiene 30 pesos, 
+	//Para el punto 2: no tiene deuda (es 0) y reside en Quilmes
+	//const manuel = 
+	const Manuel= new Visitante(edad = 7, dinero = 30, municipioRecidencia = 0, deudaMunicipal = quilmes)
+
+	//Martin es un visitante de 16 años y tiene 120 pesos .
+	//Para el punto 2: tiene 80 de deuda y reside en San Martin
+	//const martin = 
+	const Martin= new Visitante(edad = 16, dinero = 120, municipioRecidencia = sanMartin, deudaMunicipal = 80)
 	
-	const fragmentadorMonopolios
-	const educadorPublico
-*/
- /*
-	fixture {
-		// Punto 1
-		// Poderes
-		altaVelocidad = null // TODO: constrir/obtener un poder de velocidad con rapidez = 2
-		superVelocidad = null // TODO: constrir/obtener un poder de velocidad con rapidez = 3
-		vueloRasante = null // TODO: constrir/obtener un poder de vuelo con altura maxima = 10 y energia para despegue = 10
-		vueloAlto = null // TODO: constrir/obtener un poder de vuelo con altura maxima = 300 y energia para despegue = 200
-		vueloRasanteAmplificado = null // TODO: constrir/obtener un poder amplificador con poder base = vueloRasante y amplificador = 4
-		superVelocidadAmplificada = null // TODO: constrir/obtener un poder amplificador con poder base = superVelocidad y amplificador = 3
 	
-		// Personajes 
-		capitanaPatriaGrande.agregarPoderes([superVelocidadAmplificada,vueloAlto])// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
-		plusvaliaCero.agregarPoderes(altaVelocidad,vueloRasanteAmplificado])// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
-		usinaDeDerechos.agregarPoderes([vueloRasante])// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
+	//const arte = //Un puesto infantil, para la segunda parte su municipio es San Martin
+	const arte= new PuestoInfantil(padrino = sanMartin)
+	//const dardos = //un puesto comercial de costo 50, para la segunda parte el municipio es San Martín
+		const dardos = new PuestoComercial(costo = 50, padrino = sanMartin)
+	//const feriaAzurduy = // una feria con los puestos de arte y dardos 
+	const feriaAzurduy = new Feria()
+
+	//const puestoTigre = //un puesto impositivo del municipio de tigre 
+		const puestoTigre = new PuestoImpositivo(padrino = tigre)
+	//const puestoSanMartin = //un puesto impositivo del municipio de san Martin
+		const puestoSanMartin = new PuestoImpositivo(padrino = sanMartin)
+	//const puestoQuilmes = //un puesto impositivo del municipio de quilmes
+		const puestoQuilmes = new PuestoImpositivo(padrino = quilmes)
 		
-		// Punto 2
-		// Equipo 
-		cooperativaJusticiera = null // TODO: constrir/obtener un conformado por capitanaPatriaGrande, plusvaliaCero y usinaDeDerechos
+
+ 	 test "1.1.a se puede visitar?" {
+		feriaAzurduy.agregarPuesto(arte)
+		feriaAzurduy.agregarPuesto(dardos)
+		 	 
+		//asegurarse que arte NO puede ser usado por remedios
+			assert.notThat(arte.puedeSerUsado(Remedios))		
+		//asegurarse que arte puede ser usado por manuel
+		assert.that(arte.puedeSerUsado(Manuel))
+		//asegurarse que arte puede ser usado por martin
+		assert.that(arte.puedeSerUsado(Martin))
 		
-		// Punto 3 
-		// Peligros
-		peligroSencillo = null // TODO: constrir/obtener un peligro con capacidad de batalla = 30 y NO tiene desechos radiactivos  
-		peligroSencilloRadiactivo = null // TODO: constrir/obtener un peligro con capacidad de batalla = 30 y tiene desechos radiactivos
-		peligroModerado = null // TODO: constrir/obtener un peligro con capacidad de batalla = 50 y NO tiene desechos radiactivos
-		peligroAlto = null // TODO: constrir/obtener un peligro con capacidad de batalla = 400 y tiene desechos radiactivos
-
-        // Punto 4
-        // TODO: agregar al peligroSencillo nivel de complejidad = 1 y cantidad de personajes que se banca en simultaneo = 2
-        // TODO: agregar al peligroSencilloRadiactivo nivel de complejidad = 1 y cantidad de personajes que se banca en simultaneo = 2
-        // TODO: agregar al peligroModerado nivel de complejidad = 2 y cantidad de personajes que se banca en simultaneo = 1
-        // TODO: agregar al peligroAlto nivel de complejidad = 3 y cantidad de personajes que se banca en simultaneo = 2
-        
-
-		// Punto 5 
-		fragmentadorMonopolios = null // TODO: constrir/obtener un Metahumano con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
-		educadorPublico = null // TODO: constrir/obtener un Mago con poder acumulado = 12, estrategia = 1, espiritualidad = 6 y poderes = vueloRasante	
+		//asegurarse que dardos puede ser usado por remedios
+		assert.that(dardos.puedeSerUsado(Remedios))
+		//asegurarse que dardos NO puede ser usado por manuel
+		assert.notThat(dardos.puedeSerUsado(Manuel))
+		//asegurarse que dardos puede ser usado por martin
+		assert.that(dardos.puedeSerUsado(Martin))
 	}
-	*/
-	
-	/* ACLARACIÓN
-	 * Los tests están comentados para evitar errores y warnings, así poder ir incorporándolos 
-	 * a medida que se avanza con la solución del ejercicio
-	 */
 	
 
-	test "punto 1.1 capacidad de batalla que aporta un poder" {
+
+	test "1.1.b saber puestos visitables" {
+		feriaAzurduy.agregarPuesto(arte)
+		feriaAzurduy.agregarPuesto(dardos)
+		//asegurarse que dardos es el unico puesto que puede usar remedios en la feria azurduy
+		assert.equals([dardos], feriaAzurduy.cualesPuedeVisitar(Remedios))
+		//asegurarse que arte es el unico puesto que puede usar maniuel en la feria azurduy
+		assert.equals([ arte ], feriaAzurduy.cualesPuedeVisitar(Manuel))
+		//asegurarse que dardos y artes son los puestos que puede martin en la feria azurduy
+		assert.equals([ arte,dardos], feriaAzurduy.cualesPuedeVisitar(Martin))
+	}	
+
+	test "1.2.a efectos de usar" {
+		// hacer que el puesto de dardos sea usado por remedios. 
+			 dardos.usar(Remedios)
+		// hacer que el puesto de arte sea usado por remedios (NO SE PUEDE!)
+			assert.throwsException({arte.usar(Remedios)})
+			assert.throwsExceptionWithMessage("este puesto no puede ser usado",{arte.usar(Remedios)})
+		// el puesto de dardos sea usado por manuel (NO SE PUEDE!) 
+			assert.throwsException({dardos.usar(Manuel)})
+		// hacer que el puesto de arte sea usado por manuel 
+			arte.usar(Manuel)
+		// hacer que el puesto de dardos sea usado por martin. 
+			dardos.usar(Martin)
+		// hacer que el puesto de arte sea usado por martin
+			arte.usar(Martin)
+				
+		//
 		
-		// TODO: Verificar que la capacidad de batalla que le aporta superVelocidadAmplificada a capitanaPatriaGrande es 576
-		assert.equals(576,superVelocidadAmplificada.capacidadBatalla(capitanaPatriaGrande))
-		// TODO: Verificar que la capacidad de batalla que le aporta vueloAlto a capitanaPatriaGrande es 876
-		assert.equals(876,vueloAlto.capacidadBatalla(capitanaPatriaGrande))
-		// TODO: Verificar que la capacidad de batalla que le aporta altaVelocidad a plusvaliaCero es 72
-		assert.equals(72,altaVelocidad.capacidadBatalla(plusvaliaCero))
-		// TODO: Verificar que la capacidad de batalla que le aporta vueloRasanteAmplificado a plusvaliaCero es 144
-		assert.equals(144,vueloRasanteAmplificado.capacidadBatalla(plusvaliaCero))
-		// TODO: Verificar que la capacidad de batalla que le aporta vueloRasante a usinaDeDerechos es 49
-		assert.equals(49,vueloRasante.capacidadBatalla(usinaDeDerechos))
+		//comprobar que el dinero de remedios es 450
+		assert.equals(450, Remedios.dinero())
+		//comprobar que el dinero de manuel es  40
+		assert.equals(40, Manuel.dinero())
+		//comprobar que el dinero de martín es 80
+		assert.equals(80, Martin.dinero())
+		//comprobar que el puesto de arte fue usado por martin y manuel
+			assert.equals([ Manuel, Martin ], arte.visitantes())
+		//comprobar que el puesto de dardos due usados por remedios y martin
+			assert.equals([ Remedios, Martin ], dardos.visitantes())
+		
 	}
- 	
 
 
-	test "punto 1.2 capacidad de batalla de un personaje" {
-		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
-		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
-		plusvaliaCero.agregarPoder(altaVelocidad)
-		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
-		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
-			
-		// TODO: Verificar que la capacidad de batalla de capitanaPatriaGrande es 1452
-		assert.equals(1452, capitanaPatriaGrande.capacidadBatalla())
+	test "1.2.b saber si se usó o no la feria" {
+		feriaAzurduy.agregarPuesto(arte)
+		feriaAzurduy.agregarPuesto(dardos)
+	// hacer que el puesto de dardos sea usado por remedios. 
+		dardos.usar(Remedios)
+	// hacer que el puesto de dardos sea usado por manuel (NO SE PUEDE!)
+		assert.throwsException({ dardos.usar(Manuel)})
+	// revisar que remedios usó la feria azurduy
+		assert.that(feriaAzurduy.usoAlgunPuesto(Remedios))
+	// revisar que manuel NO usó la feria azurduy
+		assert.notThat(feriaAzurduy.usoAlgunPuesto(Manuel))
 		
-		// TODO: Verificar que la capacidad de batalla de plusvaliaCero es 216
-		assert.equals(216, plusvaliaCero.capacidadBatalla())
-		// TODO: Verificar que la capacidad de batalla de usinaDeDerechos es 49
-		assert.equals(49, usinaDeDerechos.capacidadBatalla())
-	}
+	// revisar que martin NO uso la feria azurduy
+ 		assert.notThat(feriaAzurduy.usoAlgunPuesto(Martin))
+ 		
+ 	}
  
+  	
+ 	test "2.1 monto exigible y puestos impositivos visitables" {
+ 		
+ 		//verificar que 80 es el monto que san martin le exige a martin
+ 		assert.equals(80, sanMartin.montoExigible(Martin))
+ 		//verificar que puestoSanMartin puede ser usado por martin
+ 			assert.that(puestoSanMartin.puedeSerUsado(Martin))
+ 		//verificar que puestoSanTigre NO puede ser usado por martin
+ 			assert.notThat(puestoTigre.puedeSerUsado(Martin))
+ 		//verificar que puestoSanQuilmes NO puede ser usado por martin
+			assert.notThat(puestoQuilmes.puedeSerUsado(Martin))
+ 		
+ 		//verificar que 0 es el monto que quilmes le exige a manuel
+ 		//	assert.equals(0, quilmes.montoExigible(Manuel))
+ 		//verificar que puestoSanMartin NO puede ser usado por manuel
+ 
+ 		 	assert.throwsException({ puestoSanMartin.usar(Manuel)})
+ 		
+ 		//verificar que 320 es el monto que tigre le exige a remedios
+ 			assert.equals(320 , tigre.montoExigible(Remedios))
+ 		//verificar que puestoTigre puede ser usado por remedios
+ 			assert.that(puestoTigre.puedeSerUsado(Remedios))
+ 		//hacer que remedios resida en san martin
+ 			Remedios.municipio(sanMartin)
+ 		//verificar que 700 es el monto que san martin le exige a remedios
+ 			assert.equals(700, sanMartin.montoExigible(Remedios))
+ 		//verificar que puestoSanMartin NO puede ser usado por remedios
+ 		assert.throwsException({puestoSanMartin.puedeSerUsado(Remedios)})
+ 		
+ 		//hacer que remedios resida en san quilmes
+ 		
+ 		//verificar que 500 es el monto que quilmes le exige a remedios
+ 		
+ 		//verificar que puestoQuilmes puede ser usado por remedios
 
-
-	test "punto 2.1 Saber el miembro vulnerable de un equipo" {
-		//cooperativaJusticiera.agregarPersonajes([capitanaPatriaGrande,plusvaliaCero,usinaDeDerechos])
-		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
-		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
-		plusvaliaCero.agregarPoder(altaVelocidad)
-		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
-		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
-			
-		cooperativaJusticiera.agregarPersonajes(capitanaPatriaGrande)
-		cooperativaJusticiera.agregarPersonajes(plusvaliaCero)
-		cooperativaJusticiera.agregarPersonajes(usinaDeDerechos)
-		assert.equals([capitanaPatriaGrande,plusvaliaCero,usinaDeDerechos], cooperativaJusticiera.personajes())
-		// TODO: Verificar que miembro mas vulnerable de cooperativaJusticiera es usinaDeDerechos
-		assert.equals(usinaDeDerechos, cooperativaJusticiera.masVuelnerable())
-	}
+ 		//hacer que remedios tenga 80 años
+ 		
+ 		//verificar que 450 es el monto que quilmes le exige a remedios
+ 		
+ 		//verificar que puestoQuilmes puede ser usado por remedios
+ 		
+ 	}
  	
 
+ 	test "2.2 usar puestos impositivos y consultas de municipio" {
+		// agregar puestoTigre a la feriaAzurduy
+		feriaAzurduy.agregarPuesto(puestoTigre)
+		// agregar puestoSanMartin a la feriaAzurduy
+		feriaAzurduy.agregarPuesto(sanMartin)
+		// const juana= //una visitante que reside en San Martín, tiene 20 años, 1000 pesos y una deuda de 300. 
+		 	const Juana = new Visitante(edad = 20, dinero = 1000, municipioRecidencia = sanMartin, deudaMunicipal =300)
 
-	test "punto 2.2 Saber la calidad de un equipo" {
-		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
-		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
-		plusvaliaCero.agregarPoder(altaVelocidad)
-		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
-		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
-			
-		// TODO: Verificar que la calidad de cooperativaJusticiera es 572.33333
-		cooperativaJusticiera.agregarPersonajes(capitanaPatriaGrande)
-		cooperativaJusticiera.agregarPersonajes(plusvaliaCero)
-		cooperativaJusticiera.agregarPersonajes(usinaDeDerechos)
-		assert.equals(572.33333, cooperativaJusticiera.calidad())		
-	}
- 	
-
-
-	test "punto 2.3 Saber los mejores poderes de un equipo" {
-		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
-		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
-		plusvaliaCero.agregarPoder(altaVelocidad)
-		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
-		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
-		cooperativaJusticiera.agregarPersonajes(capitanaPatriaGrande)
-		cooperativaJusticiera.agregarPersonajes(plusvaliaCero)
-		cooperativaJusticiera.agregarPersonajes(usinaDeDerechos)
-		// TODO: Verificar que los mejores poderes de cooperativaJusticiera son vueloAlto, vueloRasanteAmplificado y vueloRasante
-		assert.equals([vueloAlto,vueloRasante,vueloRasanteAmplificado], cooperativaJusticiera.mejoresPoderes())	
-	}
-	
-	
-/*
-	test "punto 3.1 personajes contra el peligro" {
-		// TODO: Verificar que peligroSencillo puede ser afrontado por capitanaPatriaGrande
-		// TODO: Verificar que peligroSencillo puede ser afrontado por plusvaliaCero
-		// TODO: Verificar que peligroSencillo puede ser afrontado por usinaDeDerechos
-
-		// TODO: Verificar que peligroSencilloRadiactivo puede ser afrontado por capitanaPatriaGrande
-		// TODO: Verificar que peligroSencilloRadiactivo puede ser afrontado por plusvaliaCero
-		// TODO: Verificar que peligroSencilloRadiactivo NO puede ser afrontado por usinaDeDerechos
-
-		// TODO: Verificar que peligroModerado puede ser afrontado por capitanaPatriaGrande
-		// TODO: Verificar que peligroModerado puede ser afrontado por plusvaliaCero
-		// TODO: Verificar que peligroModerado NO puede ser afrontado por usinaDeDerechos
-	
-		// TODO: Verificar que peligroAlto puede ser afrontado por capitanaPatriaGrande
-		// TODO: Verificar que peligroAlto NO puede ser afrontado por plusvaliaCero
-		// TODO: Verificar que peligroAlto NO puede ser afrontado por usinaDeDerechos
-	}
- */	
-	
-/*
-	test "punto 3.2 Saber si un peligro es sensato " {
-		// TODO: Verificar que peligroSencillo es sensato para cooperativaJusticiera
-		// TODO: Verificar que peligroSencilloRadiactivo NO es sensato para cooperativaJusticiera
-		// TODO: Verificar que peligroModerado NO es sensato para cooperativaJusticiera
-		// TODO: Verificar que peligroAlto NO es sensato para cooperativaJusticiera
-	}
- */	
-	
-/*
-	test "punto 4.1 Afrontar peligro individualmente: OK" {
-		// TODO: Hacer que usinaDeDerechos afronte a peligroSencillo 
-		// TODO: Verificar que la estrategia de usinaDeDerechos es 2
-	}
- */
-
-/*
-	test "punto 4.1 Afrontar peligro individualmente: no OK por radioactividad" {
-		// TODO: Hacer que usinaDeDerechos afronte a peligroSencilloRadiactivo (NO SE PUEDE!)
-		// TODO: Verificar que la estrategia de usinaDeDerechos es 1
-	}
- */
-	
-/*
-	test "punto 4.1 Afrontar peligro individualmente: no OK por capacidad de batalla" {
-		// TODO: Hacer que usinaDeDerechos afronte a peligroModerado (NO SE PUEDE!)
-		// TODO: Verificar que la estrategia de usinaDeDerechos es 1
-	}
- */
-	
-/*
-	test "punto 4.2  Afrontar peligro (moderado) en equipo  " {
-		// TODO: Hacer que cooperativaJusticiera afronte a peligroModerado
-		// TODO: Verificar que la estrategia de capitanaPatriaGrande es 5
-		// TODO: Verificar que la estrategia de plusvaliaCero es 4
-		// TODO: Verificar que la estrategia de usinaDeDerechos es 1		
-	}
- */
-
-/*
-	test "punto 4.2  Afrontar peligro (alto) en equipo (no ok)" {
-		// TODO: Hacer que cooperativaJusticiera afronte a peligroAlto (NO SE PUEDE!)
-		// TODO: Verificar que la estrategia de capitanaPatriaGrande es 3
-		// TODO: Verificar que la estrategia de plusvaliaCero es 2
-		// TODO: Verificar que la estrategia de usinaDeDerechos es 1
-	}
- */	
-
-/*
-	test "punto 5.1  Metahumano " {
-		// TODO: Verificar que la capacidad de batalla de fragmentadorMonopolios es 98
-		// TODO: Verificar que peligroSencilloRadiactivo puede ser afrontado por fragmentadorMonopolios
-		// TODO: Hacer que fragmentadorMonopolios afronte a peligroSencilloRadiactivo
-		// TODO: Verificar que la estrategia de fragmentadorMonopolios es 2
-		// TODO: Verificar que la espiritualidad de fragmentadorMonopolios es 7
-		// TODO: Verificar que peligroAlto NO puede ser afrontado por fragmentadorMonopolios
-		// TODO: Hacer que fragmentadorMonopolios afronte a peligroAlto (NO SE PUEDE!)
-	}
- */
-
-/*
-	test "punto 5.2  Mago " {
-		// TODO: Verificar que la capacidad de batalla de educadorPublico es 110
-		// TODO: Verificar que peligroAlto NO puede ser afrontado por educadorPublico
-		// TODO: Hacer que educadorPublico afronte a peligroAlto (NO SE PUEDE!)
-
-		// TODO: Verificar que peligroSencilloRadiactivo puede ser afrontado por educadorPublico
-		// TODO: Hacer que educadorPublico afronte a peligroSencilloRadiactivo
-		// TODO: Verificar que la estrategia de educadorPublico es 2
-		// TODO: Verificar que la espiritualidad de educadorPublico es 7
-		// TODO: Verificar que el poder acumulado de educadorPublico es 7
+		// hacer que el puesto impositivo de Tigre sea usado por Remedios.
+		puestoTigre.usar(Remedios)
+		// hacer que el puesto impositivo de San Martín sea usado por Juana. 
+		sanMartin.usar(Juana)
+		// hacer que el puesto impositivo de San Martín sea usado por Martín.
+		sanMartin.usar(Martin)
+		//Verificar que Martín no tiene mas deuda 
 		
-		// TODO: Hacer que educadorPublico afronte a peligroSencilloRadiactivo
-		// TODO: Verificar que la estrategia de educadorPublico es 2
-		// TODO: Verificar que la espiritualidad de educadorPublico es 7
-		// TODO: Verificar que el poder acumulado de educadorPublico es 2
-	}
- */
+		//Verificar que Martin tiene 40 de dinero.
+		
+		//Verificar que Juana no tiene más deuda 
+		
+		//Verificar que Juana le queda 700 de dinero.
+		
+		//Verificar que Remedios tiene 380 de deuda 
+		//Verificar que Remedios tiene 180 de dinero.
+		//Verificar que Tigre recaudó 320.
+		//Verificar que San Martín recaudó 380.
+		//Verificar que Tigre apadrina 1 puesto de la feria Azurduy.
+		//Verificar que San Martín apadrina 3 puestos de la feria Azurduy.
+		//Verificar que Quilmes no apadrina a nadie en la feria Azurduy.
+		//Verificar que los municipios apadrinantes de la feria Azurduy son Tigre y San Martín.
+		//Verificar que el promedio de racaudación de la feria Azurduy es 350.
+		//Verificar que el municipio que menos recaudó en la feria es Tigre.
+ 		
+ 	}
+
+	
 }
