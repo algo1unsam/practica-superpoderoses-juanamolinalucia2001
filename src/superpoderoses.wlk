@@ -15,7 +15,7 @@ class Personaje {
 	}
 	
 	method mejorPoder(){
-		poderes.filter({poder=>poder.capacidadBatalla().max()})
+		return poderes.max({poder=>poder.capacidadBatalla()})
 	}
 }
 
@@ -91,7 +91,7 @@ class Equipo{
 	}
 	
 	method masVuelnerable(){
-		return personajes.filter({personaje=>personaje.capacidadBatalla().min()})
+		return personajes.min({personaje=> personaje.capacidadBatalla()})
 	}
 	
 	method calidad(){
@@ -99,11 +99,28 @@ class Equipo{
 	}
 	
 	method totalCapacidad(){
-		return personajes.sum({ personaje => personaje.capacidadBatalla()})
+		return personajes.sum({personaje => personaje.capacidadBatalla()})
 	}
 	method mejoresPoderes(){
-		personajes.map({personaje=>personaje.mejorPoder()})
+	 return	personajes.map({personaje=>personaje.mejorPoder()})
 	}
 	
 
 }
+
+class Peligro{
+	var property capacidadDebatalla
+	var property desechosRadiactivos
+	
+	method puedeSerAfrontado(personaje){
+		return self.esCapazDeVencer(personaje) and self.desechosRadiactivos()
+	}
+	
+	method esCapazDeVencer(personaje){
+		return personaje.capacidadDeBatalla() > capacidadDebatalla
+	}
+	
+	method esCapazManejarRadioactividad(personaje){
+			if(desechosRadiactivos) personaje.esInmune()
+	}
+	}
