@@ -1,189 +1,160 @@
-class Feria{
-const property puestos=[]
+class Personaje {
 
-method agregarPuesto(puesto){
-	puestos.add(puesto)
-}
+	const property estrategia
+	const property espiritualidad
+	const property poderes = []
 
-method cualesPuedeVisitar(persona) {
-		return puestos.filter({ puesto => puesto.puedeSerUsado(persona) })
+	method capacidadBatalla() {
+		return poderes.sum({ poder => poder.capacidadBatalla(self)})
 	}
 	
+
 	
-method usoAlgunPuesto(persona){
-	return puestos.any({puesto=>puesto.fueVisitadoPor(persona)})
-}
-
-}
-class Puesto{
-//Todos los puestos tienen un municipio que los apadrina
-const property padrino
-var property visitantes=[]
-
-method puedeSerUsado(persona)	
-
-
-method validaPuedeSerUsado(persona){
-	if(not self.puedeSerUsado(persona)){
-		self.error("este puesto no puede ser usado")
+	method agregarPoder(poder){
+		poderes.add(poder)
 	}
 	
+	method mejorPoder(){
+		return poderes.max({poder=>poder.capacidadBatalla(self)})
+	}
+	
+	method soyInmune(){
+		return poderes.any({poder=>poder.otorgarInmunidad().equals(true)})
+	}
+	
+	method superaPeligro(peligro){
+		return peligro.esCapazDeVencer(self)
+	}
 }
-
-method usar(persona){
-	self.validaPuedeSerUsado(persona)
-	visitantes.add(persona)
-}
-
-method fueVisitadoPor(persona){
-	return visitantes.contains(persona)
-}
-
-
-}
-
-
-class PuestoComercial inherits Puesto{
-	const costo
+class  Metahumano inherits Personaje{
 	
-	override method puedeSerUsado(persona){
-		return persona.dinero()> costo
+	override method capacidadBatalla(){
+		return super()*2
 	}
 	
-	override method usar(persona){
-	super(persona)
-	persona.gastarDinero(costo)
-}
-
-	
-}
-
-class PuestoInfantil inherits Puesto{
-	override method puedeSerUsado(persona){
-	return persona.edad() < 18
-	}
-	
-	override method usar(persona){
-	super(persona)
-	persona.ganarDinero()
-}
-}
-
-class PuestoImpositivo inherits Puesto{
-	//que al ser usado, un visitante pagará toda o parte de su deuda municipal.
-	
-	//El visitante debe residir en el mismo municipio que apadrina el puesto impositivo.
-	
-	override method puedeSerUsado(persona){
-		return self.esRecidente(persona) and persona.tieneDeuda() and persona.puedePagar()
-		
-	}
-	
-	override method usar(persona){
-		super(persona)
-		persona.pagarDeuda()
-	}
-	
-	method esRecidente(persona){
-		return persona.municipioRecidencia().equals(padrino)
-	}
-
-}
-
-
-class Visitante{
-	var property edad
-	var property dinero
-	const property municipioRecidencia
-	var property deudaMunicipal
-	
-	method gastarDinero(costo){
-		dinero-=costo
-	}
-	
-	method ganarDinero(){
-		dinero+=10
-	}
-	method esMayorQue(numero){
-		return edad>=numero
-	}
-	method tieneDeuda(){
-		return deudaMunicipal>0
-	}
-	
-	method puedePagar(){
-		return dinero>=deudaMunicipal
-	}
-	
-	method pagarDeuda() {
-		const monto = municipioRecidencia.montoExigible(self)
-		self.gastarDinero(monto)
-		deudaMunicipal -= monto
+	override method soyInmune(){
+		return true
 	}
 	
 }
 
-class Municipio{
-		var recaudado=0
-		method montoExigible(persona){
-		return self.montoBruto(persona) - self.montoProrrogable(persona)
-	}
-	
-	
-	method montoBruto(persona){
-		return persona.deudaMunicipal()
-	}
-	method montoProrrogable(persona){
-		return if (self.condicionEdad(persona)) self.montoBruto(persona) * 0.1 else 0
+class Poder {
+
+	method capacidadBatalla(personaje) {
+		return (self.agilidad(personaje) + self.fuerza(personaje)) * self.habilidadEspecial(personaje)
 	}
 
-	method condicionEdad(persona){
-		return persona.esMayorQue(75)
+	method agilidad(personaje)
+
+	method fuerza(personaje)
+
+	method habilidadEspecial(personaje) {
+		return personaje.espiritualidad() + personaje.estrategia()
 	}
 	
-	method recibirPago(persona) {
-		recaudado += self.montoExigible(persona)
+	method otorgarInmunidad()
+}
+
+class Velocidad inherits Poder {
+
+	const property rapidez
+
+	override method agilidad(personaje) {
+		return personaje.estrategia() * rapidez
 	}
+
+	override method fuerza(personaje) {
+		return personaje.espiritualidad() * rapidez
+	}
+		override method otorgarInmunidad(){
+		return false
+	}
+
+}
+
+class Vuelo inherits Poder {
+
+	const property alturaMaxima
+	const property energiaParaDespegue
+
+	override method agilidad(personaje) {
+		return personaje.estrategia() * alturaMaxima / energiaParaDespegue
+	}
+
+	override method fuerza(personaje) {
+		return personaje.espiritualidad() + alturaMaxima - energiaParaDespegue
+	}
+	
+		override method otorgarInmunidad(){
+		return alturaMaxima>200
+	}
+	
 	
 }
 
-//Para los municipios relajados el monto bruto es el número menor de entre la deuda
-// y el dinero disponible, mientras que el monto prorrogable es igual que los municipios normales.
-class Relajado inherits Municipio{
-	
-	override method montoBruto(persona){
-		if(self.cualEsMenor(persona)){
-			return persona.dinero()		
-		}else{
-			return persona.deudaMunicipal()
-		}
-	}
-	
-	method cualEsMenor(persona){
-		return persona.deudaMunicipal()>persona.dinero()
-		
-	}
-	
-	
-		
-}
-	
+class PoderAmplificador inherits Poder {
 
-//Para los municipios hiperrelajados, el monto bruto es el 80% del bruto que calcularía un municipio relajado y el monto prorrogable es el doble que el del resto de los municipios. 
-//Pero además, la edad para saber si corresponde o no baja a 60 años.
-class HiperRelajado inherits Relajado{
-	
-	override method montoBruto(persona) {
-		return super(persona) * 0.8
+	const property poderBase
+	const property amplificador
+
+	override method agilidad(personaje) {
+		return poderBase.agilidad(personaje)
 	}
 
-	override method montoProrrogable(persona) {
-		return super(persona) * 2
+	override method fuerza(personaje) {
+		return poderBase.fuerza(personaje)
+	}
+
+	override method habilidadEspecial(personaje) {
+		return poderBase.habilidadEspecial(personaje) * amplificador
 	}
 	
-		override method condicionEdad(persona){
-		return persona.esMayorQue(60)
+	override method otorgarInmunidad(){
+		return true
 	}
+
 }
 
+class Equipo{
+	var property personajes=[]
+	
+	method agregarPersonajes(personejes){
+		personajes.add(personejes)
+	}
+	
+	method masVuelnerable(){
+		return personajes.min({personaje=> personaje.capacidadBatalla()})
+	}
+	
+	method calidad(){
+		return self.totalCapacidad() / personajes.size()
+	}
+	
+	method totalCapacidad(){
+		return personajes.sum({personaje => personaje.capacidadBatalla()})
+	}
+	method mejoresPoderes(){
+	 return	personajes.map({personaje=>personaje.mejorPoder()})
+	}
+	
+	method peligroSensato(peligro) {
+		return personajes.all({ personaje => personaje.superaPeligro(peligro) })
+	}
+	
+	
+}
 
+class Peligro{
+	var property nivelComplejidad
+	var property capacidadDebatalla
+	var property desechosRadiactivos
+	var property cantidad	
+
+	
+	method esCapazDeVencer(personaje){
+		return personaje.capacidadBatalla() > capacidadDebatalla
+	}
+	
+	
+	
+	}
