@@ -1,126 +1,189 @@
-class Personaje {
+class Feria{
+const property puestos=[]
 
-	const property estrategia
-	const property espiritualidad
-	const property poderes = []
-
-	method capacidadBatalla() {
-		return poderes.sum({ poder => poder.capacidadBatalla(self)})
-	}
-	
-
-	
-	method agregarPoder(poder){
-		poderes.add(poder)
-	}
-	
-	method mejorPoder(){
-		return poderes.max({poder=>poder.capacidadBatalla()})
-	}
+method agregarPuesto(puesto){
+	puestos.add(puesto)
 }
 
-class Poder {
-
-	method capacidadBatalla(personaje) {
-		return (self.agilidad(personaje) + self.fuerza(personaje)) * self.habilidadEspecial(personaje)
+method cualesPuedeVisitar(persona) {
+		return puestos.filter({ puesto => puesto.puedeSerUsado(persona) })
 	}
-
-	method agilidad(personaje)
-
-	method fuerza(personaje)
-
-	method habilidadEspecial(personaje) {
-		return personaje.espiritualidad() + personaje.estrategia()
-	}
-
+	
+	
+method usoAlgunPuesto(persona){
+	return puestos.any({puesto=>puesto.fueVisitadoPor(persona)})
 }
 
-class Velocidad inherits Poder {
+}
+class Puesto{
+//Todos los puestos tienen un municipio que los apadrina
+const property padrino
+var property visitantes=[]
 
-	const property rapidez
+method puedeSerUsado(persona)	
 
-	override method agilidad(personaje) {
-		return personaje.estrategia() * rapidez
+
+method validaPuedeSerUsado(persona){
+	if(not self.puedeSerUsado(persona)){
+		self.error("este puesto no puede ser usado")
 	}
+	
+}
 
-	override method fuerza(personaje) {
-		return personaje.espiritualidad() * rapidez
-	}
+method usar(persona){
+	self.validaPuedeSerUsado(persona)
+	visitantes.add(persona)
+}
+
+method fueVisitadoPor(persona){
+	return visitantes.contains(persona)
+}
+
 
 }
 
-class Vuelo inherits Poder {
 
-	const property alturaMaxima
-	const property energiaParaDespegue
-
-	override method agilidad(personaje) {
-		return personaje.estrategia() * alturaMaxima / energiaParaDespegue
+class PuestoComercial inherits Puesto{
+	const costo
+	
+	override method puedeSerUsado(persona){
+		return persona.dinero()> costo
 	}
+	
+	override method usar(persona){
+	super(persona)
+	persona.gastarDinero(costo)
+}
 
-	override method fuerza(personaje) {
-		return personaje.espiritualidad() + alturaMaxima - energiaParaDespegue
+	
+}
+
+class PuestoInfantil inherits Puesto{
+	override method puedeSerUsado(persona){
+	return persona.edad() < 18
+	}
+	
+	override method usar(persona){
+	super(persona)
+	persona.ganarDinero()
+}
+}
+
+class PuestoImpositivo inherits Puesto{
+	//que al ser usado, un visitante pagará toda o parte de su deuda municipal.
+	
+	//El visitante debe residir en el mismo municipio que apadrina el puesto impositivo.
+	
+	override method puedeSerUsado(persona){
+		return self.esRecidente(persona) and persona.tieneDeuda() and persona.puedePagar()
+		
+	}
+	
+	override method usar(persona){
+		super(persona)
+		persona.pagarDeuda()
+	}
+	
+	method esRecidente(persona){
+		return persona.municipioRecidencia().equals(padrino)
 	}
 
 }
 
-class PoderAmplificador inherits Poder {
 
-	const property poderBase
-	const property amplificador
-
-	override method agilidad(personaje) {
-		return poderBase.agilidad(personaje)
+class Visitante{
+	var property edad
+	var property dinero
+	const property municipioRecidencia
+	var property deudaMunicipal
+	
+	method gastarDinero(costo){
+		dinero-=costo
 	}
-
-	override method fuerza(personaje) {
-		return poderBase.fuerza(personaje)
+	
+	method ganarDinero(){
+		dinero+=10
 	}
-
-	override method habilidadEspecial(personaje) {
-		return poderBase.habilidadEspecial(personaje) * amplificador
+	method esMayorQue(numero){
+		return edad>=numero
 	}
-
+	method tieneDeuda(){
+		return deudaMunicipal>0
+	}
+	
+	method puedePagar(){
+		return dinero>=deudaMunicipal
+	}
+	
+	method pagarDeuda() {
+		const monto = municipioRecidencia.montoExigible(self)
+		self.gastarDinero(monto)
+		deudaMunicipal -= monto
+	}
+	
 }
 
-class Equipo{
-	var property personajes=[]
-	
-	method agregarPersonajes(personejes){
-		personajes.add(personejes)
+class Municipio{
+		var recaudado=0
+		method montoExigible(persona){
+		return self.montoBruto(persona) - self.montoProrrogable(persona)
 	}
 	
-	method masVuelnerable(){
-		return personajes.min({personaje=> personaje.capacidadBatalla()})
-	}
 	
-	method calidad(){
-		return self.totalCapacidad() / personajes.size()
+	method montoBruto(persona){
+		return persona.deudaMunicipal()
 	}
-	
-	method totalCapacidad(){
-		return personajes.sum({personaje => personaje.capacidadBatalla()})
+	method montoProrrogable(persona){
+		return if (self.condicionEdad(persona)) self.montoBruto(persona) * 0.1 else 0
 	}
-	method mejoresPoderes(){
-	 return	personajes.map({personaje=>personaje.mejorPoder()})
-	}
-	
 
+	method condicionEdad(persona){
+		return persona.esMayorQue(75)
+	}
+	
+	method recibirPago(persona) {
+		recaudado += self.montoExigible(persona)
+	}
+	
 }
 
-class Peligro{
-	var property capacidadDebatalla
-	var property desechosRadiactivos
+//Para los municipios relajados el monto bruto es el número menor de entre la deuda
+// y el dinero disponible, mientras que el monto prorrogable es igual que los municipios normales.
+class Relajado inherits Municipio{
 	
-	method puedeSerAfrontado(personaje){
-		return self.esCapazDeVencer(personaje) and self.desechosRadiactivos()
+	override method montoBruto(persona){
+		if(self.cualEsMenor(persona)){
+			return persona.dinero()		
+		}else{
+			return persona.deudaMunicipal()
+		}
 	}
 	
-	method esCapazDeVencer(personaje){
-		return personaje.capacidadDeBatalla() > capacidadDebatalla
+	method cualEsMenor(persona){
+		return persona.deudaMunicipal()>persona.dinero()
+		
 	}
 	
-	method esCapazManejarRadioactividad(personaje){
-			if(desechosRadiactivos) personaje.esInmune()
+	
+		
+}
+	
+
+//Para los municipios hiperrelajados, el monto bruto es el 80% del bruto que calcularía un municipio relajado y el monto prorrogable es el doble que el del resto de los municipios. 
+//Pero además, la edad para saber si corresponde o no baja a 60 años.
+class HiperRelajado inherits Relajado{
+	
+	override method montoBruto(persona) {
+		return super(persona) * 0.8
 	}
+
+	override method montoProrrogable(persona) {
+		return super(persona) * 2
 	}
+	
+		override method condicionEdad(persona){
+		return persona.esMayorQue(60)
+	}
+}
+
+
