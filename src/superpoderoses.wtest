@@ -111,24 +111,47 @@ describe "Superpoderoses" {
 
 	test "punto 2.1 Saber el miembro vulnerable de un equipo" {
 		//cooperativaJusticiera.agregarPersonajes([capitanaPatriaGrande,plusvaliaCero,usinaDeDerechos])
+		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
+		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
+		plusvaliaCero.agregarPoder(altaVelocidad)
+		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
+		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
+			
 		cooperativaJusticiera.agregarPersonajes(capitanaPatriaGrande)
 		cooperativaJusticiera.agregarPersonajes(plusvaliaCero)
 		cooperativaJusticiera.agregarPersonajes(usinaDeDerechos)
 		assert.equals([capitanaPatriaGrande,plusvaliaCero,usinaDeDerechos], cooperativaJusticiera.personajes())
 		// TODO: Verificar que miembro mas vulnerable de cooperativaJusticiera es usinaDeDerechos
-		assert.equals([usinaDeDerechos], cooperativaJusticiera.masVuelnerable())
+		assert.equals(usinaDeDerechos, cooperativaJusticiera.masVuelnerable())
 	}
  	
 
 
 	test "punto 2.2 Saber la calidad de un equipo" {
+		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
+		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
+		plusvaliaCero.agregarPoder(altaVelocidad)
+		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
+		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
+			
 		// TODO: Verificar que la calidad de cooperativaJusticiera es 572.33333
-		assert.equals(572.3333, cooperativaJusticiera.calidad())		
+		cooperativaJusticiera.agregarPersonajes(capitanaPatriaGrande)
+		cooperativaJusticiera.agregarPersonajes(plusvaliaCero)
+		cooperativaJusticiera.agregarPersonajes(usinaDeDerechos)
+		assert.equals(572.33333, cooperativaJusticiera.calidad())		
 	}
  	
 
 
 	test "punto 2.3 Saber los mejores poderes de un equipo" {
+		capitanaPatriaGrande.agregarPoder(superVelocidadAmplificada)
+		capitanaPatriaGrande.agregarPoder(vueloAlto)// TODO: constrir/obtener un personaje con estrategia = 3, espiritualidad = 5 y poderes = superVelocidadAmplificada y vueloAlto
+		plusvaliaCero.agregarPoder(altaVelocidad)
+		plusvaliaCero.agregarPoder(vueloRasanteAmplificado)// TODO: constrir/obtener un personaje con estrategia = 2, espiritualidad = 4 y poderes = altaVelocidad y vueloRasanteAmplificado
+		usinaDeDerechos.agregarPoder(vueloRasante)// TODO: constrir/obtener un personaje con estrategia = 1, espiritualidad = 6 y poderes = vueloRasante
+		cooperativaJusticiera.agregarPersonajes(capitanaPatriaGrande)
+		cooperativaJusticiera.agregarPersonajes(plusvaliaCero)
+		cooperativaJusticiera.agregarPersonajes(usinaDeDerechos)
 		// TODO: Verificar que los mejores poderes de cooperativaJusticiera son vueloAlto, vueloRasanteAmplificado y vueloRasante
 		assert.equals([vueloAlto,vueloRasante,vueloRasanteAmplificado], cooperativaJusticiera.mejoresPoderes())	
 	}
